@@ -43,7 +43,7 @@ export default {
 
   serverMiddleware: [
     {
-      path: "/", handler: "@/server-middleware/index.js"
+      path: "/api", handler: "@/server-middleware/index.js"
     }
   ],
 
@@ -54,12 +54,12 @@ export default {
   },
   pwa: {
     meta: {
-      title: 'My PWA',
-      author: 'Me',
+      title: 'Smart Energy',
+      author: 'Bppimt, ECE\'22',
     },
     manifest: {
-      name: 'Nuxt.js PWAs are so easy',
-      short_name: 'Nuxt.js PWA',
+      name: 'Smart Energy',
+      short_name: 'Smart Energy',
       lang: 'en',
     },
   },
