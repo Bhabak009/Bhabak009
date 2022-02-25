@@ -1,5 +1,5 @@
 <template>
-  <div>Hello</div>
+  <div>Hello energy</div>
 </template>
 
 <script>
