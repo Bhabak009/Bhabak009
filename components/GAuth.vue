@@ -1,5 +1,11 @@
 <template>
-  <button @click="OauthInitiate">google</button>
+  <div v-show="isSignedIn !== null" class="oauth-wrapper">
+    <div v-if="!isSignedIn" class="login-btn" @click="googleSignIn">Login</div>
+    <div v-if="isSignedIn" class="user">
+      <div class="user-name">{{ userData.name }}</div>
+      <img :src="userData.photo" alt="">
+    </div>
+  </div>
 </template>
 
 <script>
@@ -9,40 +15,94 @@ import {
   signOut,
   GoogleAuthProvider,
 } from "firebase/auth";
+import Cookies from "js-cookie";
+
 export default {
+  data: () => ({
+    userData: {
+      name: '',
+      email: '',
+      photo: '',
+    },
+    isSignedIn: null,
+  }),
+  mounted () {
+    this.googleCurrentUser();
+  },
   methods: {
-    OauthInitiate() {
+    googleCurrentUser() {
+      let user =  getAuth().currentUser;
+      console.log(user)
+      if (!user) {
+        const json = Cookies.get('googleUser');
+        user = JSON.parse(json || 'null');
+      }
+      console.log(user)
+      if(user) {
+        this.userData = {
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL,
+        }
+
+        this.isSignedIn = true;
+        Cookies.set('googleUser', JSON.stringify(user), { expires: 365 })
+      } else {
+        this.isSignedIn = false;
+      }
+    },
+    googleSignIn() {
       const auth = getAuth();
       const provider = new GoogleAuthProvider();
 
       signInWithPopup(auth, provider)
         .then((result) => {
-          // This gives you a Google Access Token. You can use it to access the Google API.
           const credential = GoogleAuthProvider.credentialFromResult(result);
           const token = credential.idToken;
-          // The signed-in user info.
-          console.log(token);
-
           const user = result.user;
-          console.log(auth);
+          this.googleCurrentUser()
         })
         .catch((error) => {
-          // Handle Errors here.
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          // The email of the user's account used.
-          const email = error.email;
-          // The AuthCredential type that was used.
-          const credential = GoogleAuthProvider.credentialFromError(error);
-          // ...
         });
-      console.log(auth);
+    },
+    googleSignOut() {
+      const auth = getAuth();
+      signOut(auth).then(() => {
+        // Sign-out successful.
+      }).catch((error) => {
+        // An error happened.
+      });
     },
   },
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.oauth-wrapper {
+  flex: 0 1 auto;
+  .login-btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    background: #fff;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .user {
+    display: flex;
+    align-items: center;
+    // font-weight: bold;
+    font-size: 18px;
+    line-height: 24px;
+    color: #fff;
+    img {
+      margin-left: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+  }
+}
 </style>
 
 
