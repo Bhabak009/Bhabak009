@@ -43,11 +43,11 @@ app.get("/getdata/:email", (req, res) => {                     //GET DATA FOR ON
         console.log(snapshot.val());
         res.send(snapshot.val());
       } else {
-        res.send("No data available");
+        res.status(400).send("No data available");
       }
     })
     .catch((error) => {
-      res.send("error reading the data from DB");
+      res.status(400).send("error reading the data from DB");
     });
 });
 app.post("/userauth", async (req, res) => {                //SET DATA FOR NEW USER OR ADD NEW FIELDS TO USER
@@ -74,7 +74,7 @@ app.delete("/deleteuser/:email", (req, res) => {                         //Route
       res.send("data deleted successfully");
     })
     .catch(() => {
-      res.status(500).send("data deletion failed");
+      res.status(400).send("data deletion failed");
     });
 });
 module.exports = app;
