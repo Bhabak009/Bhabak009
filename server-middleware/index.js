@@ -70,16 +70,17 @@ app.delete("/deleteuser/:uid", (req, res) => {                         //Route f
 });
 app.post("/setrandom", async (req, res) => {                //SET DATA FOR NEW USER OR ADD NEW FIELDS TO USER
   var uid = req.body.uid;
-  let arrdata = req.body.random;
+  let arrdata = req.body.random.split(":");
+  
   var data = await getjson(uid);
   if (data)
     set(ref(db, "/" + uid), {
       ...data,
-      myphone3: arrdata,
+      [arrdata[0]]: arrdata[1] || 'none',
     });
   else
     set(ref(db, "/" + uid), {
-      myphone: arrdata,
+      [arrdata[0]]: arrdata[1] || 'none',
     });
 
   //  console.log(`data: ${data}`);
