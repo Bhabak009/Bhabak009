@@ -70,7 +70,7 @@ app.delete("/deleteuser/:uid", (req, res) => {                         //Route f
 });
 app.post("/setrandom", async (req, res) => {                //SET DATA FOR NEW USER OR ADD NEW FIELDS TO USER
   var uid = req.body.uid;
-  let arrdata = req.body.random.split(":");
+  let arrdata = req.body.random.split("=");
   
   var data = await getjson(uid);
   if (data)
