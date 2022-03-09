@@ -68,4 +68,21 @@ app.delete("/deleteuser/:uid", (req, res) => {                         //Route f
       res.status(400).send("data deletion failed");
     });
 });
+app.post("/setrandom", async (req, res) => {                //SET DATA FOR NEW USER OR ADD NEW FIELDS TO USER
+  var uid = req.body.uid;
+  let arrdata = req.body.random;
+  var data = await getjson(uid);
+  if (data)
+    set(ref(db, "/" + uid), {
+      ...data,
+      myphone3: arrdata,
+    });
+  else
+    set(ref(db, "/" + uid), {
+      myphone: arrdata,
+    });
+
+  //  console.log(`data: ${data}`);
+  res.json({ response: "done added in database" });
+});
 module.exports = app;
