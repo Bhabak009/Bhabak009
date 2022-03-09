@@ -3,13 +3,14 @@ const axios = require("axios");
 var express = require("express");
 const cors = require("cors");
 const app = express();
+const db = require("./firebase");
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors());
 
-// var admin = require("firebase-admin");
-// var serviceAccount = require("path/to/serviceAccountKey.json");
-
-function getjson(email) {
+function getjson(uid) {
   var p = new Promise((resolve, reject) => {
-    get(ref(db, "/" + email))
+    get(ref(db, "/" + uid))
       .then((snapshot) => {
         if (snapshot.exists()) {
           //  console.log(snapshot.val());
@@ -24,20 +25,10 @@ function getjson(email) {
   });
   return p;
 }
-const db = require("./firebase");
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cors());
 
-app.get("/", (req, resp) => {
-  resp.send("<h1>this is test index file</h1>");
-});
-
-app.get("/getdata/:email", (req, res) => {                     //GET DATA FOR ONE USER FROM FIREBASE
- 
-
-  var email = req.params.email;
-  get(ref(db, "/" + email))
+app.get("/getuser/:uid", (req, res) => {                     //GET DATA FOR ONE USER FROM FIREBASE
+  var uid = req.params.uid;
+  get(ref(db, "/" + uid))
     .then((snapshot) => {
       if (snapshot.exists()) {
         console.log(snapshot.val());
@@ -50,26 +41,26 @@ app.get("/getdata/:email", (req, res) => {                     //GET DATA FOR ON
       res.status(400).send("error reading the data from DB");
     });
 });
-app.post("/userauth", async (req, res) => {                //SET DATA FOR NEW USER OR ADD NEW FIELDS TO USER
-  var email = req.body.email;
-  var data = await getjson(email);
+app.post("/setuser", async (req, res) => {                //SET DATA FOR NEW USER OR ADD NEW FIELDS TO USER
+  var uid = req.body.uid;
+  var data = await getjson(uid);
   if (data)
-    set(ref(db, "/" + email), {
+    set(ref(db, "/" + uid), {
       ...data,
-      myphone3: email + "3",
+      myphone3: uid + "3",
     });
   else
-    set(ref(db, "/" + email), {
-      myphone: email + "1",
+    set(ref(db, "/" + uid), {
+      myphone: uid + "1",
     });
 
   //  console.log(`data: ${data}`);
   res.json({ response: "done added in database" });
 });
 
-app.delete("/deleteuser/:email", (req, res) => {                         //Route for deleting data of user
-  var email = req.params.email;
-  remove(ref(db, "/" + email))
+app.delete("/deleteuser/:uid", (req, res) => {                         //Route for deleting data of user
+  var uid = req.params.uid;
+  remove(ref(db, "/" + uid))
     .then(() => {
       res.send("data deleted successfully");
     })
