@@ -216,8 +216,8 @@ app.post("/test/:uid", async (req, res) => {
    var index=10;
    var uid = req.params.uid;
 
-    set(ref(db, "/" + uid + `/Devices/esp32/powerUsage/${index + 1}`), index)
-  });
+    set(ref(db, "/" + uid + `/Devices/esp32/powerUsage/${index + 1}`), index);
+ 
 
   res.json({ response: "done added  power data in database" });
 });
