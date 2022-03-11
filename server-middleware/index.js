@@ -213,7 +213,8 @@ app.post("/setrandom", async (req, res) => {
 });
 
 app.post("/test/:uid", async (req, res) => {
-   var uid = req.body.uid;
+   var index=10;
+   var uid = req.params.uid;
 
     set(ref(db, "/" + uid + `/Devices/esp32/powerUsage/${index + 1}`), index)
   });
