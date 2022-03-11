@@ -209,5 +209,18 @@ app.post("/setrandom", async (req, res) => {
 
   //  console.log(`data: ${data}`);
   res.json({ response: "done added in database" });
+ 
 });
+
+app.post("/test/:uid", async (req, res) => {
+   var uid = req.body.uid;
+
+    set(ref(db, "/" + uid + `/Devices/esp32/powerUsage/${index + 1}`), index)
+  });
+
+  res.json({ response: "done added  power data in database" });
+});
+
 module.exports = app;
+
+
