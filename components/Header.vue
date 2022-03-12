@@ -3,7 +3,7 @@
     <div class="logo">
       <img src="~/static/icon.png" alt="logo">
     </div>
-    <g-auth></g-auth>
+    <GAuth></GAuth>
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default {
   width: 100%;
   height: 60px;
   padding: 0 20px;
-  background-color: rgb(72, 140, 204);
+  background-color: rgb(14, 47, 66);
 
   .logo {
     display: flex;
