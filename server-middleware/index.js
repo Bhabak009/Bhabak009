@@ -155,12 +155,40 @@ app.post("/settrigger/:uid", (req, res) => {
   var uid = req.params.uid;
   var status = req.body.status;
   console.log("set trigger API called");
-  var value = status === "true" ? true : false;
+  var value = status === "true"||status === "1" ? true:false;
   set(ref(db, "/" + uid + "/Devices/esp32/trigger"), {
     //Creating  bucket for the storing details for Esp32
     status: value,
   });
   res.json("trigger changed");
+});
+
+app.get("/toggletrigger/:uid", (req, res) => {
+  //API FOR TURNING THE SWITCH ON OR OFF
+  var uid = req.params.uid;
+ 
+
+  get(ref(db, "/" + uid + "/Devices/esp32/trigger"))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        let status = snapshot.val().status;
+        console.log(status);
+        var value = !status
+        console.log(status == "true");
+        console.log(status);
+
+        set(ref(db, "/" + uid + "/Devices/esp32/trigger"), {
+          //Creating  bucket for the storing details for Esp32
+          status: value
+        });
+        res.json("trigger changed");
+      
+      } else {
+        res.status(400).send("No user data available");
+      }
+    });
+
+
 });
 
 app.get("/userdata/:uid", (req, res) => {
@@ -222,6 +250,4 @@ app.post("/test/:uid", async (req, res) => {
   res.json({ response: "done added  power data in database" });
 });
 
-module.exports = app;
-
-
+  module.exports = app;

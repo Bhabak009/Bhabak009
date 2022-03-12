@@ -67,7 +67,7 @@ void setup() {
   config.max_token_generation_retry = 10;
   Firebase.begin(&config, &auth);
 
-  if (!Firebase.beginStream(stream, "/NewUser/node1/lastIndex"))
+  if (!Firebase.beginStream(stream, "/NewUser/Devices/esp32/trigger/status"))
     Serial.printf("sream begin error, %s\n\n", stream.errorReason().c_str());
 
   String var = "$userId";
@@ -150,17 +150,22 @@ void loop() {
       Serial.printf("error code: %d, reason: %s\n\n", stream.httpCode(), stream.errorReason().c_str());
   }
 
+
   if (stream.streamAvailable()) {
-    Serial.printf("sream path, %s\nevent path, %s\ndata type, %s\nevent type, %s\n\n",
-                  stream.streamPath().c_str(),
-                  stream.dataPath().c_str(),
-                  stream.dataType().c_str(),
-                  stream.eventType().c_str());
-    printResult(stream);  //see addons/RTDBHelper.h
-    Serial.println();
-    digitalWrite(2, HIGH);
-    delay(300);
-    digitalWrite(2, LOW);
+    // Serial.printf("sream path, %s\nevent path, %s\ndata type, %s\nevent type, %s\n\n",
+    //               stream.streamPath().c_str(),
+    //               stream.dataPath().c_str(),
+    //               stream.dataType().c_str(),
+    //               stream.eventType().c_str());
+    // printResult(stream);  //see addons/RTDBHelper.h
+    
+
+    Serial.println(stream.stringData());
+
+    
+    
+    if(stream.stringData() == "true")digitalWrite(2, true);
+    else if(stream.stringData() == "false")digitalWrite(2, false);
 
     //This is the size of stream payload received (current and max value)
     //Max payload size is the payload size under the stream path since the stream connected
