@@ -85,7 +85,7 @@ export default {
     getWifi () {
       setInterval(() => {
         scanWifi().then((ssids) => {
-          this.rawSsids = ssids;
+          this.rawSsids = ssids.data;
         });
       }, 10000);
     }
