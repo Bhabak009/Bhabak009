@@ -1,13 +1,141 @@
 <template>
-  <div>dashboard</div>
+  <div class="dashboard">
+    <div class="top-intro">
+      <div class="r1">Hello,</div>
+      <div class="r2">{{ userDetails.name }}</div>
+    </div>
+    <div class="main-container">
+      <section class="devices">
+        <div class="devices-title">
+          <h2>Devices</h2>
+          <div class="cards-container">
+            <div class="card" v-for="device in allDevices">
+              <div class="title">{{ device.name }}</div>
+              <div class="power">
+                <div class="value">{{ device.todayPowerUsage }} / {{ device.dailyPowerLimit }}</div>
+                <div class="desc">Today power usage</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- <line-chart :data="chartData"></line-chart> -->
+    </div>
+  </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-
+  data () {
+    return {
+      chartData: {
+        '2017-05-13': 2,
+        '2017-05-14': 3,
+        '2017-05-15': 4,
+        '2017-05-16': 5,
+      },
+      allDevices: [
+        {
+          name: 'Esp32',
+          status: 'online',
+          todayPowerUsage: '5.3',
+          dailyPowerLimit: '10.5',
+        },
+        {
+          name: 'Esp32',
+          status: 'online',
+          todayPowerUsage: '5.3',
+          dailyPowerLimit: '10.5',
+        }
+      ],
+    }
+  },
+  computed: {
+    ...mapGetters(['token', 'userDetails'])
+  }
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.dashboard {
+  width: 100%;
+  height: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.top-intro {
+  padding: 20px;
+  margin-bottom: 24px;
+  .r1 {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 24px;
+    color: rgb(255, 255, 255);
+  }
+  .r2 {
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 36px;
+    color: rgb(0, 0, 0);
+  }
+}
+.main-container {
+  height: 100%;
+  padding: 20px;
+  border-radius: 36px 36px 0 0;
+  background: rgb(255, 255, 255);
+}
+.devices-title {
+  margin-bottom: 24px;
+  padding: 12px 0;
+  h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: normal;
+    line-height: 24px;
+    color: rgb(22, 22, 22);
+  }
+}
+.cards-container {
+  display: flex;
+  height: 180px;
+  width: 100%;
+  overflow-x: auto;
+  .card {
+    position: relative;
+    flex: 0 0 auto;
+    width: 240px;
+    height: 160px;
+    margin-right: 16px;
+    padding: 20px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #457488, #2d525f, #162d36);
+    cursor: pointer;
+    .title {
+      width: 100px;
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 24px;
+      color: #ebecf1;
+      // background: linear-gradient(to right, #ffd857, #ffa726);
+    }
+    .power {
+      position: absolute;
+      bottom: 20px;
+       .value{
+         font-size: 32px;
+         line-height: 38px;
+         font-weight: bold;
+         color: #ebecf1;
+       }
+      .desc {
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 16px;
+        color: rgb(157, 175, 182);
+      }
+    }
+  }
+}
 </style>

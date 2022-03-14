@@ -1,5 +1,8 @@
 <template>
   <div class="landing-warp">
+    <div class="logo">
+      <img src="~/static/icon.png" alt="">
+    </div>
     <h2 class="title">A live Electricity <br> Measuring Tool</h2>
     <p class="description">A platform where you can measure electricity usage of our household on a daily basis.</p>
     <div class="start-btn" @click="startClicked">
@@ -22,10 +25,18 @@ export default {
   width: 100%;
   height: 100%;
   padding: 20px;
+  padding-top: 15vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  // justify-content: center;
   align-items: center;
+  .logo {
+    width: 100px;
+    margin-bottom: 40px;
+    img {
+      width: 100%;
+    }
+  }
   .title {
     text-align: center;
     font-size: calc(36px + (76 - 36) * (100vw - 360px) / (1440 - 360));

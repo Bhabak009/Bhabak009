@@ -7,6 +7,20 @@
   </div>
 </template>
 
+<script>
+import Cookies from 'js-cookie';
+export default {
+  mounted () {
+    const userJson = Cookies.get('googleUser');
+    if (!userJson) {
+      if (this.$route.path !== '/') {
+        this.$router.push('/');
+      }
+    }
+  }
+}
+</script>
+
 <style>
 * {
   margin: 0;
@@ -19,6 +33,10 @@ html, body, #__nuxt, #__layout, #app {
   height: 100%;
 }
 .main {
-  height: calc(100% - 60px);
+  padding-top: 60px;
+  height: 100%;
+  background: #ffd857;
+  background: #2d525f;
+  /* background: #e9edef; */
 }
 </style>

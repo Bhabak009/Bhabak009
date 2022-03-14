@@ -2,7 +2,7 @@
   <div v-show="isSignedIn !== null" class="oauth-wrapper">
     <div v-if="!isSignedIn" class="login-btn" @click="googleSignIn">Login</div>
     <div v-if="isSignedIn" class="user" @click="googleSignOut">
-      <div class="user-name">{{ userData.name }}</div>
+      <!-- <div class="user-name">{{ userData.name }}</div> -->
       <img :src="userData.photo" alt="">
     </div>
   </div>
@@ -17,7 +17,6 @@ import {
 } from "firebase/auth";
 import { setUser } from "@/services/user";
 import Cookies from "js-cookie";
-
 
 export default {
   data: () => ({
@@ -71,6 +70,8 @@ export default {
           phone: providerData.phoneNumber,
           photo: providerData.photoURL,
         }
+        this.$store.commit('setToken', this.userData.uid);
+        this.$store.commit('setUserDetails', this.userData);
         if(isCurrentLogin) {
           this.setUserOnFirebase(this.userData);
         }
@@ -100,6 +101,7 @@ export default {
       signOut(auth).then(() => {
         Cookies.remove('googleUser')
         this.googleCurrentUser()
+        this.$router.push('/')
       }).catch((error) => {
         // An error happened.
       });

@@ -15,13 +15,15 @@ export default {
 
 <style lang="scss" scoped>
 .top-header {
+  position: fixed;
+  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 60px;
   padding: 0 20px;
-  background-color: rgb(14, 47, 66);
+  background: #2d525f;
 
   .logo {
     display: flex;
