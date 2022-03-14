@@ -71,7 +71,7 @@ export default {
         password: this.wifiPassword,
       }
       console.log(data)
-      this.sendUid()
+      //this.sendUid()
       setSsid(data).then(() => {
         this.statusText = 'Connected successfully'
       })
