@@ -20,7 +20,10 @@ export const setSsid = (payload) => {
   const options = {
     method: 'POST',
     url: 'http://192.168.4.1/wifi',
-    headers: payload
+    headers: {
+    "ssid":payload.ssid,
+    "password":payload.password
+    }
   }
   return axios(options)
 }
