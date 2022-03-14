@@ -83,11 +83,11 @@ export default {
       })
     },
     getWifi () {
-      setTimeout(() => {
+      setInterval(() => {
         scanWifi().then((ssids) => {
           this.rawSsids = ssids;
         });
-      }, 1000);
+      }, 10000);
     }
   }
 }
