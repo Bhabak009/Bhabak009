@@ -10,7 +10,7 @@ const agent = new https.Agent({
 });
 export const scanWifi = (payload) => {
   const options = {
-    method: 'GET',
+    method: 'POST',
     url: 'http://192.168.4.1/scan',
     httpsAgent: agent
   }
