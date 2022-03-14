@@ -19,7 +19,7 @@ export const setUserId = (payload) => {
 export const setSsid = (payload) => {
   const options = {
     method: 'POST',
-    url: 'http://192.168.4.1/setuid',
+    url: 'http://192.168.4.1/wifi',
     header: payload
   }
   return axios(options)
