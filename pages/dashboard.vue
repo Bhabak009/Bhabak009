@@ -46,12 +46,6 @@ export default {
           status: 'online',
           todayPowerUsage: '5.3',
           dailyPowerLimit: '10.5',
-        },
-        {
-          name: 'Esp32',
-          status: 'online',
-          todayPowerUsage: '5.3',
-          dailyPowerLimit: '10.5',
         }
       ],
     }
@@ -105,7 +99,7 @@ export default {
   display: flex;
   height: 180px;
   width: 100%;
-  overflow-x: auto;
+  overflow: scroll;
   .card {
     position: relative;
     flex: 0 0 auto;
