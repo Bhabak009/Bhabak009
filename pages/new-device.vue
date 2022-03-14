@@ -79,7 +79,7 @@ export default {
     sendUid () {
       setUserId({ uid: this.uid }).then(()=> {
       }).catch(() => {
-        this.sendUid();
+        setTimeout(()=>{this.sendUid()},10000)
       })
     },
     getWifi () {
