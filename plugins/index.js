@@ -1,4 +1,9 @@
+import Vue from 'vue'
 import { initializeApp } from "firebase/app";
+import Chartkick from 'vue-chartkick'
+import Chart from 'chart.js'
+
+Vue.use(Chartkick.use(Chart))
 
 const firebaseConfig = {
   apiKey: "AIzaSyADCZSDj0wHLCkJU5W6HN2iyo7y978SRec",

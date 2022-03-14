@@ -16,10 +16,15 @@
                 <div class="desc">Today power usage</div>
               </div>
             </div>
+            <router-link to="/new-device" class="card add">
+              <div class="title">Add new device</div>
+            </router-link>
           </div>
         </div>
       </section>
-      <!-- <line-chart :data="chartData"></line-chart> -->
+      <client-only placeholder="loading...">
+        <line-chart :data="chartData"></line-chart>
+      </client-only>
     </div>
   </div>
 </template>
@@ -56,7 +61,6 @@ export default {
   }
 }
 </script>
-
 <style lang="scss" scoped>
 .dashboard {
   width: 100%;
@@ -77,7 +81,7 @@ export default {
     font-size: 28px;
     font-weight: bold;
     line-height: 36px;
-    color: rgb(0, 0, 0);
+    color: #fff;
   }
 }
 .main-container {
@@ -112,8 +116,13 @@ export default {
     border-radius: 16px;
     background: linear-gradient(135deg, #457488, #2d525f, #162d36);
     cursor: pointer;
+    &.add {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+    }
     .title {
-      width: 100px;
       font-size: 22px;
       font-weight: bold;
       line-height: 24px;

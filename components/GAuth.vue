@@ -76,7 +76,9 @@ export default {
           this.setUserOnFirebase(this.userData);
         }
         this.isSignedIn = true;
-        this.$router.push('/dashboard');
+        if (this.$route.path === '/') {
+          this.$router.push('/dashboard');
+        }
         Cookies.set('googleUser', JSON.stringify(user), { expires: 365 })
       } else {
         this.isSignedIn = false;

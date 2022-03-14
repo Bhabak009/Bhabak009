@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header></Header>
-    <div class="main">
+    <div class="main" :style="{background: mainBg}">
       <Nuxt />
     </div>
   </div>
@@ -10,6 +10,18 @@
 <script>
 import Cookies from 'js-cookie';
 export default {
+  computed: {
+    mainBg () {
+      let bgColor = '#fff';
+      if (this.$route.name == 'dashboard') {
+        bgColor = '#2d525f';
+      }
+      if (this.$route.name == 'new-device') {
+        bgColor = '#2d525f';
+      }
+      return bgColor
+    }
+  },
   mounted () {
     const userJson = Cookies.get('googleUser');
     if (!userJson) {
@@ -32,11 +44,16 @@ html, body, #__nuxt, #__layout, #app {
   width: 100%;
   height: 100%;
 }
+#app {
+  display: flex;
+  flex-direction: column;
+}
 .main {
-  padding-top: 60px;
-  height: 100%;
-  background: #ffd857;
-  background: #2d525f;
+  flex: 1;
+  margin-top: 60px;
+  /* background: #ffd857;
+  background: #2d525f; */
+  overflow-y: auto;
   /* background: #e9edef; */
 }
 </style>

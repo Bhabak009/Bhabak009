@@ -30,6 +30,7 @@ export default {
   flex-direction: column;
   // justify-content: center;
   align-items: center;
+  background: #fff;
   .logo {
     width: 100px;
     margin-bottom: 40px;
