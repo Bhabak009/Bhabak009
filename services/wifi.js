@@ -27,3 +27,11 @@ export const setSsid = (payload) => {
   }
   return axios(options)
 }
+
+export const randomtest = () => {
+  const options = {
+    method: 'POST',
+    url: 'http://192.168.29.63:8000/test',
+  }
+  return axios(options)
+}
