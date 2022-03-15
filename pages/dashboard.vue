@@ -9,7 +9,7 @@
         <div class="devices-title">
           <h2>Devices</h2>
           <div class="cards-container">
-            <div class="card" v-for="device in allDevices">
+            <div class="card" v-for="device in allDevices" @click="deviceCardClicked(device)">
               <div class="title">{{ device.name }}</div>
               <div class="power">
                 <div class="value">{{ device.todayPowerUsage }} / {{ device.dailyPowerLimit }}</div>
@@ -44,14 +44,20 @@ export default {
         {
           name: 'Esp32',
           status: 'online',
-          todayPowerUsage: '5.3',
-          dailyPowerLimit: '10.5',
+          todayPowerUsage: 6.4,
+          dailyPowerLimit: 9.2,
+          redirect: '/device'
         }
       ],
     }
   },
   computed: {
     ...mapGetters(['token', 'userDetails'])
+  },
+  methods: {
+    deviceCardClicked (device) {
+      this.$router.push(device.redirect)
+    }
   }
 }
 </script>
