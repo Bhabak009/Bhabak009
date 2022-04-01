@@ -66,24 +66,24 @@ app.post("/setuser", async (req, res) => {
     .then(() => console.log("added bucket correctly"))
     .catch((err) => console.log(err));
 
-  set(ref(db, "/" + uid + "/Devices/esp32/trigger"), {
+  set(ref(db, "/" + uid + "/Devices/esp32/trigger"), 
     //Creating  bucket for the storing details for Esp32
-    status: false,
-  });
+     false,
+  );
   var object = { time: new Date().getTime(), power: 0 };
-  set(ref(db, "/" + uid + "/Devices/esp32/powerUsage/0"), {
-    //Creating  bucket for the storing details for Esp32
-    data: JSON.stringify(object),
-  });
-  set(ref(db, "/" + uid + "/Devices/esp32/lastIndex"), {
+  set(ref(db, "/" + uid + "/Devices/esp32/powerUsage/0"), 
+  
+    JSON.stringify(object)
+  );
+  set(ref(db, "/" + uid + "/Devices/esp32/lastIndex"), 
     //Creating  bucket for the storing details for Esp32
 
-    index: 0,
-  });
-  set(ref(db, "/" + uid + "/Devices/esp32/connectionlog/0"), {
+     0
+  );
+  set(ref(db, "/" + uid + "/Devices/esp32/connectionlog/0"),
     //Creating  bucket for the storing details for Esp32
-    Time: new Date().getTime(),
-  });
+    new Date().getTime()
+  );
 
   //  console.log(`data: ${data}`);
   res.json({ response: "done added in database" });
@@ -96,18 +96,18 @@ app.post("/addpower/:uid", async (req, res) => {
   let index = -4;
   get(ref(db, "/" + uid + "/Devices/esp32/lastIndex")).then((snapshot) => {
     if (snapshot.exists()) {
-      index = snapshot.val().index;
+      index = snapshot.val();
       console.log("index:" + index);
     } else {
       index = -1;
     }
     var obj = { time: new Date().getTime(), power: power - 0 };
-    set(ref(db, "/" + uid + `/Devices/esp32/powerUsage/${index + 1}`), {
-      data: JSON.stringify(obj),
-    }).then(() => {
-      set(ref(db, "/" + uid + "/Devices/esp32/lastIndex"), {
-        index: index + 1,
-      });
+    set(ref(db, "/" + uid + `/Devices/esp32/powerUsage/${index + 1}`),
+       JSON.stringify(obj)
+    ).then(() => {
+      set(ref(db, "/" + uid + "/Devices/esp32/lastIndex"),
+         index + 1,
+      );
     });
   });
 
@@ -155,40 +155,12 @@ app.post("/settrigger/:uid", (req, res) => {
   var uid = req.params.uid;
   var status = req.body.status;
   console.log("set trigger API called");
-  var value = status === "true"||status === "1" ? true:false;
-  set(ref(db, "/" + uid + "/Devices/esp32/trigger"), {
-    //Creating  bucket for the storing details for Esp32
-    status: value,
-  });
+  var value = status === "true" ? true : false;
+  set(ref(db, "/" + uid + "/Devices/esp32/trigger"), 
+    
+     value
+  );
   res.json("trigger changed");
-});
-
-app.get("/toggletrigger/:uid", (req, res) => {
-  //API FOR TURNING THE SWITCH ON OR OFF
-  var uid = req.params.uid;
- 
-
-  get(ref(db, "/" + uid + "/Devices/esp32/trigger"))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        let status = snapshot.val().status;
-        console.log(status);
-        var value = !status
-        console.log(status == "true");
-        console.log(status);
-
-        set(ref(db, "/" + uid + "/Devices/esp32/trigger"), {
-          //Creating  bucket for the storing details for Esp32
-          status: value
-        });
-        res.json("trigger changed");
-      
-      } else {
-        res.status(400).send("No user data available");
-      }
-    });
-
-
 });
 
 app.get("/userdata/:uid", (req, res) => {
@@ -237,17 +209,108 @@ app.post("/setrandom", async (req, res) => {
 
   //  console.log(`data: ${data}`);
   res.json({ response: "done added in database" });
- 
+
 });
-
-app.post("/test/:uid", async (req, res) => {
-   var index=10;
-   var uid = req.params.uid;
-
-    set(ref(db, "/" + uid + `/Devices/esp32/powerUsage/${index + 1}`), index);
+app.get("/testsum/:uid",async(req,res)=>{
+  var uid = req.params.uid;
+  let today_year = new Date().getFullYear();
+  let date = new Date().getDate();
+  let month = new Date().getMonth();
+  let start = +new Date(today_year,month,date,0,0,0,0);
+  let end= +new Date()
+  // let start = 1646937000000;
+  // var end = 1646980199999;
+  console.log("start:",start);
+  console.log("end:",end);
+  var powervalues;
+  get(ref(db, "/" + uid + "/Devices/esp32/powerUsage"))
+  .then((snapshot) => {
+    if (snapshot.exists()) {
+     powervalues=snapshot.val();
+      var objs = powervalues.map((p)=>JSON.parse(p));
+      console.log("objs");
+     var datas = objs.filter(o=>{return (o.time>=start && o.time<=end)});
+     var record_nos=datas.length;
+     console.log("power array:",datas);
+    // console.log("objs:",objs)
+    // var objs2=objs.slice(3,-1);
+    //  var original_data = datas.map(data=>JSON.parse(data));
+    //  console.log(original_data);
+      var sum=0;
+    datas.forEach(obj => {
+       sum+=parseInt(obj.power);
+     });
+    console.log("power values:",powervalues);
+    console.log("sum:",sum);
+    console.log("length of arr:",record_nos);
+    let avg = sum/record_nos;
+    res.send({power:sum,samples:record_nos});
+    } else {
+      powervalues=null;
+      res.send({power:powervalues,samples:null})
+    }
+  })
+  .catch((error) => {
+    console.log("in catch")
+   powervalues=null
+   res.send({power:powervalues,samples:null})
+  });
  
+  
+})
+app.get("/timinggetpower/:uid",async(req,res)=>{
+  let minutes = req.query.mins;
+  let hours = req.query.hours;
+  let days = req.query.days;
+  minutes=minutes||hours*60||days*24*60
+  
+  var uid = req.params.uid;
+  let today_year = new Date().getFullYear();
+  let date = new Date().getDate();
+  let month = new Date().getMonth();
+  
+  let end= +new Date()
+  
+  let start = end-minutes*60000;
+  // let start = 1646937000000;
+  // var end = 1646980199999;
+  console.log("start:",start);
+  console.log("end:",end);
+  var powervalues;
+  get(ref(db, "/" + uid + "/Devices/esp32/powerUsage"))
+  .then((snapshot) => {
+    if (snapshot.exists()) {
+     powervalues=snapshot.val();
+      var objs = powervalues.map((p)=>JSON.parse(p));
+      console.log("objs");
+     var datas = objs.filter(o=>{return (o.time>=start && o.time<=end)});
+     var record_nos=datas.length;
+     console.log("power array:",datas);
+    // console.log("objs:",objs)
+    // var objs2=objs.slice(3,-1);
+    //  var original_data = datas.map(data=>JSON.parse(data));
+    //  console.log(original_data);
+    //   var sum=0;
+    // datas.forEach(obj => {
+    //    sum+=parseInt(obj.power);
+    //  });
+    // console.log("power values:",powervalues);
+    // console.log("sum:",sum);
+    // console.log("length of arr:",record_nos);
+    // let avg = sum/record_nos;
+    res.send(datas);
+    } else {
+      powervalues=null;
+      res.send(powervalues)
+    }
+  })
+  .catch((error) => {
+    console.log("in catch")
+   powervalues=null
+   res.send({powervalues})
+  });
+ 
+  
+})
 
-  res.json({ response: "done added  power data in database" });
-});
-
-  module.exports = app;
+module.exports = app;
