@@ -69,6 +69,7 @@ export default {
       const data = {
         ssid: this.wifiName,
         password: this.wifiPassword,
+        uid:this.uid
       }
       console.log(data)
       //this.sendUid()
