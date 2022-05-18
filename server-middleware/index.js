@@ -101,7 +101,7 @@ app.post("/addpower/:uid", async (req, res) => {
     } else {
       index = -1;
     }
-    var obj = { time: new Date().getTime(), power: power - 0 };
+    var obj = new Date().getTime() + ":" + power;
     set(ref(db, "/" + uid + `/Devices/esp32/powerUsage/${index + 1}`),
        JSON.stringify(obj)
     ).then(() => {
