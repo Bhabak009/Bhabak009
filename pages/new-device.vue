@@ -24,6 +24,9 @@
       <div class="middle">
         <div class="title">Connect to wifi</div>
         <div class="input">
+          <input type="text" placeholder="Device name" v-model="deviceName">
+        </div>
+        <div class="input">
           <input type="password" placeholder="Password" v-model="wifiPassword">
         </div>
         <div class="button" @click="setWifiId">Connect</div>
@@ -41,6 +44,7 @@ export default {
       rawSsids: {},
       wifiName: '',
       wifiPassword: '',
+      deviceName: '',
       statusText: '',
       showPopup: false
     }
@@ -63,18 +67,20 @@ export default {
       this.showPopup = true;
     },
     setWifiId () {
-      if(!this.wifiPassword) {
+      if(!this.wifiPassword || !this.deviceName) {
         return;
       }
       const data = {
         ssid: this.wifiName,
         password: this.wifiPassword,
-        uid:this.uid
+        uid:this.uid,
+        deviceName: this.deviceName
       }
       console.log(data)
       //this.sendUid()
       setSsid(data).then(() => {
         this.statusText = 'Connected successfully'
+        this.showPopup = false;
       })
     },
     sendUid () {
@@ -115,7 +121,7 @@ export default {
     justify-content: center;
     align-items: center;
     width: 340px;
-    height: 240px;
+    height: 280px;
     background: #fff;
     border-radius: 24px;
     .title {

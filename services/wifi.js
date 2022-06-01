@@ -23,7 +23,8 @@ export const setSsid = (payload) => {
     headers: {
     "ssid":payload.ssid,
     "password":payload.password,
-    "uid":payload.uid
+    "uid":payload.uid,
+    "deviceName":payload.deviceName
     }
   }
   return axios(options)
