@@ -42,23 +42,32 @@ export default {
   computed: {
     electricityData () {
       if (this.rawData == null) { return ({})}
-      const res = {
-        data: this.rawData
-      }
-      let temp = 0
-      const TOTAL_TIME_RANGE = 19*60*60/10
-      this.timeStamp = res.data.Time.slice(res.data.Time.length - TOTAL_TIME_RANGE - 100, res.data.Time.length - 100)
-      this.powerUsage = res.data.Power.slice(res.data.Power.length - TOTAL_TIME_RANGE - 100, res.data.Power.length - 100)
-      temp = 0
-      this.powerUsage = this.powerUsage.map((amp, i) => {
-        temp = amp*1
-        return temp
-      })
-      this.timeStamp = this.timeStamp.map(value => this.getFilteredData(value*1000 - 1000*3600*5.5))
+      // const res = {
+      //   data: this.rawData
+      // }
+      // let temp = 0
+      // const TOTAL_TIME_RANGE = 19*60*60/10
+      // this.timeStamp = res.data.Time.slice(res.data.Time.length - TOTAL_TIME_RANGE - 100, res.data.Time.length - 100)
+      // this.powerUsage = res.data.Power.slice(res.data.Power.length - TOTAL_TIME_RANGE - 100, res.data.Power.length - 100)
+      // temp = 0
+      // this.powerUsage = this.powerUsage.map((amp, i) => {
+      //   temp = amp*1
+      //   return temp
+      // })
+      // this.timeStamp = this.timeStamp.map(value => this.getFilteredData(value*1000 - 1000*3600*5.5))
+      // const finalData = {}
+      // this.timeStamp.map((value, i) => {
+      //   finalData[value] = this.powerUsage[i]
+      // })
       const finalData = {}
-      this.timeStamp.map((value, i) => {
-        finalData[value] = this.powerUsage[i]
-      })
+      this.rawData.Power.forEach(element => {
+        // console.log(JSON.parse(element))
+        // finalData.push(JSON.parse(element))
+        if (!element) return
+        const time = element.split(':')[0].slice(1)
+        const power = element.split(':')[1].slice(0, -1)
+        finalData[time] = power
+      });
       return finalData
     },
     circleDashoffset () {
