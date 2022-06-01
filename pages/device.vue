@@ -41,7 +41,7 @@ export default {
   },
   computed: {
     electricityData () {
-      if (this.rawData == null) { return ({})}
+      if (!this.rawData) { return ({})}
       // const res = {
       //   data: this.rawData
       // }
@@ -60,13 +60,15 @@ export default {
       //   finalData[value] = this.powerUsage[i]
       // })
       const finalData = {}
-      this.rawData.Power.forEach(element => {
+      let lastPower = 0
+      this.rawData.forEach(element => {
         // console.log(JSON.parse(element))
         // finalData.push(JSON.parse(element))
         if (!element) return
-        const time = element.split(':')[0].slice(1)
-        const power = element.split(':')[1].slice(0, -1)
-        finalData[time] = power
+        const time = new Date(element.split(':')[0]*1000 - 1000*3600*5.5)
+        const power = element.split(':')[1]
+        lastPower += power
+        finalData[time] = lastPower
       });
       return finalData
     },
@@ -97,6 +99,13 @@ export default {
     fetchPowerData () {
       getPower().then(res => {
         this.rawData = res.data
+        setTimeout(() => {
+          this.fetchPowerData()
+        }, 5000)
+      }).catch(() => {
+        setTimeout(() => {
+          this.fetchPowerData()
+        }, 5000)
       })
     },
     animateCircle (target = 0) {
