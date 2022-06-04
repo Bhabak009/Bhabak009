@@ -19,7 +19,9 @@
       </div>
     </div>
     <h2 class="daily-power-title">Today Power Usage</h2>
-    <line-chart :data="electricityData"></line-chart>
+    <client-only>
+      <line-chart :data="electricityData"></line-chart>
+    </client-only>
   </div>
 </template>
 
@@ -65,8 +67,8 @@ export default {
         // console.log(JSON.parse(element))
         // finalData.push(JSON.parse(element))
         if (!element) return
-        const time = new Date(element.split(':')[0]*1000 - 1000*3600*5.5)
-        const power = element.split(':')[1]
+        const time = new Date(element.split(':')[0]*1000)
+        const power = Math.abs(element.split(':')[1]) // todo: fix abs issue
         lastPower += power
         finalData[time] = lastPower
       });
