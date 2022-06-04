@@ -68,7 +68,7 @@ export default {
         // finalData.push(JSON.parse(element))
         if (!element) return
         const time = new Date(element.split(':')[0]*1000)
-        const power = element.split(':')[1]
+        const power = element.split(':')[1] - 0
         lastPower += power
         finalData[time] = lastPower
       });
