@@ -36,6 +36,7 @@ app.get("/getuser/:uid", (req, res) => {
         console.log(snapshot.val());
         res.send(snapshot.val());
       } else {
+        console.log(snapshot)
         res.status(400).send("No data available");
       }
     })
@@ -119,7 +120,7 @@ app.get("/getpower/:uid", async (req, res) => {
 
   var uid = req.params.uid;
 
-  get(ref(db, "/" + uid + "/Devices/esp32/powerUsage"))
+  get(ref(db, "/" + uid + "/devices/esp1/power"))
     .then((snapshot) => {
       if (snapshot.exists()) {
         console.log(snapshot.val());
@@ -217,19 +218,26 @@ app.get("/testsum/:uid",async(req,res)=>{
   let date = new Date().getDate();
   let month = new Date().getMonth();
   let start = +new Date(today_year,month,date,0,0,0,0);
-  let end= +new Date()
+  let end= +new Date(today_year,month,date,23,59,59,999)
   // let start = 1646937000000;
   // var end = 1646980199999;
   console.log("start:",start);
   console.log("end:",end);
   var powervalues;
-  get(ref(db, "/" + uid + "/Devices/esp32/powerUsage"))
+  get(ref(db, "/" + uid + "/devices/esp1/power"))
   .then((snapshot) => {
     if (snapshot.exists()) {
      powervalues=snapshot.val();
-      var objs = powervalues.map((p)=>JSON.parse(p));
-      console.log("objs");
-     var datas = objs.filter(o=>{return (o.time>=start && o.time<=end)});
+     var objs = powervalues.filter((strs)=>strs!=null).map((str)=>{
+        return {
+          time: parseInt(str.split(":")[0]*1000),
+          power: parseFloat(str.split(":")[1])
+        }
+     })
+     
+      
+    console.log("objs",objs.slice(0,10));
+     var datas = objs.filter(o=>{return (o.time>=start )});
      var record_nos=datas.length;
      console.log("power array:",datas);
     // console.log("objs:",objs)
@@ -240,7 +248,7 @@ app.get("/testsum/:uid",async(req,res)=>{
     datas.forEach(obj => {
        sum+=parseInt(obj.power);
      });
-    console.log("power values:",powervalues);
+    console.log("power values:",powervalues.slice(0,10));
     console.log("sum:",sum);
     console.log("length of arr:",record_nos);
     let avg = sum/record_nos;
