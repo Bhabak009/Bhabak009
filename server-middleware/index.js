@@ -231,7 +231,7 @@ app.get("/todaypower/:uid",async(req,res)=>{                   //API TO GET TODA
      var objs = powervalues.filter((strs)=>strs!=null).map((str)=>{
         return {
           time: parseInt(str.split(":")[0]*1000),
-          power: parseFloat(str.split(":")[1])
+          power: Math.abs(parseFloat(str.split(":")[1]))
         }
      })
      
@@ -246,12 +246,13 @@ app.get("/todaypower/:uid",async(req,res)=>{                   //API TO GET TODA
     //  console.log(original_data);
       var sum=0;
     datas.forEach(obj => {
-       sum+=parseInt(obj.power);
+       sum+=obj.power;
      });
     console.log("power values:",powervalues.slice(0,10));
     console.log("sum:",sum);
     console.log("length of arr:",record_nos);
-    let avg = sum/record_nos;
+    let avg = parseFloat((sum/record_nos).toFixed(2));
+    sum=parseFloat(sum.toFixed(2))
     res.send({power:sum,samples:record_nos});
     } else {
       powervalues=null;
