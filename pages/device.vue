@@ -19,7 +19,9 @@
       </div>
     </div>
     <h2 class="daily-power-title">Today Power Usage</h2>
-    <line-chart :data="electricityData"></line-chart>
+    <client-only>
+      <line-chart :data="electricityData"></line-chart>
+    </client-only>
   </div>
 </template>
 
