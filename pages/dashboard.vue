@@ -16,9 +16,9 @@
                 <div class="desc">Today power usage</div>
               </div>
             </div>
-            <router-link to="/new-device" class="card add">
+            <a href="http://smart-energy-bpp.herokuapp.com/new-device" target="_blank" class="card add">
               <div class="title">Add new device</div>
-            </router-link>
+            </a>
           </div>
         </div>
       </section>
