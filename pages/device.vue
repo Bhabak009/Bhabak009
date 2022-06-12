@@ -14,7 +14,7 @@
     <div class="switch-container">
       <p class="title">On/off switch</p>
       <div class="switch-box">
-        <input type="checkbox" id="switch" class="switch" />
+        <input type="checkbox" id="switch" class="switch" @input="onToggle($event, 1)" />
         <label for="switch">Toggle</label>
       </div>
     </div>
@@ -85,6 +85,17 @@ export default {
     }, 1000)
   },
   methods: {
+    onToggle (e, type) {
+      const state = e.target.checked
+      const userId = '110771677259066877542'
+      const ref = this.$fireRef(this.$fireDb, `${userId}/devices/esp1/trigger`)
+
+      
+      if (type === 1) {
+        const data = state ? '01' : '00'
+        this.$fireSet(ref, data)
+      }
+    },
     getFilteredData (data = 0) {
       if(data === 0) { return null}
       const dateObj = new Date(data)

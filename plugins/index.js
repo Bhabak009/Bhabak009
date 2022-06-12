@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set, push } from 'firebase/database'
 import Chartkick from 'vue-chartkick'
 import Chart from 'chart.js'
 
@@ -16,3 +17,12 @@ const firebaseConfig = {
   measurementId: "G-Y7MVLQNQF7"
 };
 const app = initializeApp(firebaseConfig);
+
+const fireDb = getDatabase(app);
+
+export default async function ({ app: { store, router, req } }, inject) {
+  inject('fireDb', fireDb)
+  inject('fireRef', ref)
+  inject('fireSet', set)
+  inject('firePush', push)
+}
