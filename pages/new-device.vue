@@ -81,6 +81,7 @@ export default {
       setSsid(data).then(() => {
         this.statusText = 'Connected successfully'
         this.showPopup = false;
+        window.close()
         window.location = '/dashboard';
       })
     },
