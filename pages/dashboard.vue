@@ -22,9 +22,9 @@
           </div>
         </div>
       </section>
-      <client-only placeholder="loading...">
+      <!-- <client-only placeholder="loading...">
         <line-chart :data="chartData"></line-chart>
-      </client-only>
+      </client-only> -->
     </div>
   </div>
 </template>
