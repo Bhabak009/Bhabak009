@@ -45,8 +45,7 @@ export default {
           name: 'Esp32',
           status: 'online',
           todayPowerUsage: 6.4,
-          dailyPowerLimit: 9.2,
-          redirect: '/device'
+          dailyPowerLimit: 9.2
         }
       ],
     }
@@ -68,7 +67,12 @@ export default {
       })
     },
     deviceCardClicked (device) {
-      this.$router.push(device.redirect)
+      this.$router.push({
+        path: `/device`,
+        query: {
+          id: device.name
+        }
+      })
     }
   }
 }
