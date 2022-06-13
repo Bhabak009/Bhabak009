@@ -54,7 +54,19 @@ export default {
   computed: {
     ...mapGetters(['token', 'userDetails'])
   },
+  mounted () {
+    this.getAllDevices()
+  },
   methods: {
+    getAllDevices () {
+      const userId = '110771677259066877542'
+      const ref = this.$fireRef(this.$fireDb, `${userId}/devices`)
+      this.$fireGet(ref).then((res) => {
+        if (res.exists()) {
+          this.allDevices = res.val()
+        }
+      })
+    },
     deviceCardClicked (device) {
       this.$router.push(device.redirect)
     }
