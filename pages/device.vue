@@ -70,7 +70,7 @@ export default {
         if (!element) return
         const time = new Date(element.split(':')[0]*1000)
         const power = Math.abs(element.split(':')[1]) // todo: fix abs issue
-        lastPower += power
+        lastPower += power * 10 / 3600
         finalData[time] = lastPower
       });
       return finalData
@@ -127,10 +127,11 @@ export default {
         }
       })
 
-      const toggleRef = this.$fireRef(this.$fireDb, `${userId}/devices/esp1/trigger`)
+      const toggleRef = this.$fireRef(this.$fireDb, `${userId}/devices/${deviceId}/trigger`)
       this.$fireOnValue(toggleRef, (res) => {
         if (res.exists()) {
           this.switchValue = res.val()
+          console.log(this.switchValue)
         }
       })
       //   setTimeout(() => {
