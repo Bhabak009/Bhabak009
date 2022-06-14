@@ -91,7 +91,8 @@ export default {
 
       const state = e.target.checked
       const userId = '110771677259066877542'
-      const ref = this.$fireRef(this.$fireDb, `${userId}/devices/esp1/trigger`)
+      const deviceId = this.$route.query.id || 'Esp1'
+      const ref = this.$fireRef(this.$fireDb, `${userId}/devices/${deviceId}/trigger`)
 
       const index = type - 1
       let value = this.switchValue
@@ -116,7 +117,8 @@ export default {
     },
     fetchPowerData () {
       const userId = '110771677259066877542'
-      const ref = this.$fireRef(this.$fireDb, `${userId}/devices/esp1/power`)
+      const deviceId = this.$route.query.id || 'Esp1'
+      const ref = this.$fireRef(this.$fireDb, `${userId}/devices/${deviceId}/power`)
 
       // Will be called every time the data changes in the Firebase Realtime Database
       this.$fireOnValue(ref, (res) => {
