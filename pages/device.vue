@@ -73,6 +73,7 @@ export default {
         lastPower += power * 10 / 3600
         finalData[time] = lastPower
       });
+      this.animateCircle(Math.floor(lastPower) / 1000)
       return finalData
     },
     circleDashoffset () {
@@ -81,7 +82,6 @@ export default {
   },
   mounted () {
     setTimeout(() => {
-      this.animateCircle(0)
       this.fetchPowerData()
     }, 1000)
   },
@@ -144,12 +144,13 @@ export default {
       // })
     },
     animateCircle (target = 0) {
-      if (this.todayUsage < target) {
-        setTimeout(() => {
-          this.todayUsage = parseFloat(this.todayUsage + 0.1).toFixed(2) - 0
-          this.animateCircle(target)
-        }, 20)
-      }
+      this.todayUsage = target
+      // if (this.todayUsage < target) {
+      //   setTimeout(() => {
+      //     this.todayUsage = parseFloat(this.todayUsage + 0.1).toFixed(2) - 0
+      //     this.animateCircle(target)
+      //   }, 20)
+      // }
     }
   }
 }

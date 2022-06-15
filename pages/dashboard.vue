@@ -38,6 +38,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
+
+const dailyTarget = 8.5;
 export default {
   data () {
     return {
@@ -56,8 +58,8 @@ export default {
         {
           name: 'Esp32',
           status: 'online',
-          todayPowerUsage: 6.4,
-          dailyPowerLimit: 9.2
+          todayPowerUsage: 0,
+          dailyPowerLimit: dailyTarget
         }
       ],
     }
@@ -75,9 +77,27 @@ export default {
       this.$fireGet(ref).then((res) => {
         if (res.exists()) {
           this.allDevices = res.val()
+          // this.allDevices = this.allDevices.map(a=> ({...a, todayPowerUsage: 0, dailyPowerLimit: 0}))
+          Object.values(this.allDevices).forEach(a=> {
+            console.log(a)
+            a.todayPowerUsage = this.calcPower(a.power)
+            a.dailyPowerLimit = 0
+          })
           this.listenAlerts()
         }
       })
+    },
+    calcPower(data) {
+      let result = 0;
+      data.forEach(element => {
+        // console.log(JSON.parse(element))
+        // finalData.push(JSON.parse(element))
+        if (!element) return
+        const time = new Date(element.split(':')[0]*1000)
+        const power = Math.abs(element.split(':')[1]) // todo: fix abs issue
+        result += power * 10 / 3600
+      });
+      return Math.floor(result * 100) / 100
     },
     listenAlerts () {
       const userId = '110771677259066877542'
