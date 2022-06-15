@@ -11,11 +11,11 @@
         <div class="value">Today Usage</div>
       </div>
     </div>
-    <div class="switch-container">
-      <p class="title">On/off switch</p>
+    <div v-for="i in switchValue.length" class="switch-container" :key="i">
+      <p class="title">On/off switch {{i}}</p>
       <div class="switch-box">
-        <input type="checkbox" id="switch" class="switch" />
-        <label for="switch">Toggle</label>
+        <input :checked="switchValue[i - 1] == '1'" type="checkbox" :id="'switch'+i" class="switch" @input="onToggle($event, i)" />
+        <label :for="'switch'+i">Toggle</label>
       </div>
     </div>
     <h2 class="daily-power-title">Today Power Usage</h2>
@@ -30,6 +30,7 @@ import { getPower } from '@/services/power'
 export default {
   data () {
     return {
+      switchValue: '',
       todayUsage: 0,
       dailyPowerLimit: 9.2,
       rawData: null,
@@ -68,8 +69,8 @@ export default {
         // finalData.push(JSON.parse(element))
         if (!element) return
         const time = new Date(element.split(':')[0]*1000)
-        const power = element.split(':')[1]
-        lastPower += power
+        const power = Math.abs(element.split(':')[1]) // todo: fix abs issue
+        lastPower += power * 10 / 3600
         finalData[time] = lastPower
       });
       return finalData
@@ -80,11 +81,27 @@ export default {
   },
   mounted () {
     setTimeout(() => {
-      this.animateCircle(6.4)
+      this.animateCircle(0)
       this.fetchPowerData()
     }, 1000)
   },
   methods: {
+    onToggle (e, type) {
+      if(type <= 0) { return }
+
+      const state = e.target.checked
+      const userId = '110771677259066877542'
+      const deviceId = this.$route.query.id || 'Esp1'
+      const ref = this.$fireRef(this.$fireDb, `${userId}/devices/${deviceId}/trigger`)
+
+      const index = type - 1
+      let value = this.switchValue
+
+      // Replacing state value at index
+      const data = value.substring(0, index) + (state ? '1' : '0') + value.substring(index + 1);
+      
+      this.$fireSet(ref, data)
+    },
     getFilteredData (data = 0) {
       if(data === 0) { return null}
       const dateObj = new Date(data)
@@ -99,16 +116,32 @@ export default {
       return output
     },
     fetchPowerData () {
-      getPower().then(res => {
-        this.rawData = res.data
-        setTimeout(() => {
-          this.fetchPowerData()
-        }, 5000)
-      }).catch(() => {
-        setTimeout(() => {
-          this.fetchPowerData()
-        }, 5000)
+      const userId = '110771677259066877542'
+      const deviceId = this.$route.query.id || 'Esp1'
+      const ref = this.$fireRef(this.$fireDb, `${userId}/devices/${deviceId}/power`)
+
+      // Will be called every time the data changes in the Firebase Realtime Database
+      this.$fireOnValue(ref, (res) => {
+        if (res.exists()) {
+          this.rawData = res.val()
+        }
       })
+
+      const toggleRef = this.$fireRef(this.$fireDb, `${userId}/devices/${deviceId}/trigger`)
+      this.$fireOnValue(toggleRef, (res) => {
+        if (res.exists()) {
+          this.switchValue = res.val()
+          console.log(this.switchValue)
+        }
+      })
+      //   setTimeout(() => {
+      //     this.fetchPowerData()
+      //   }, 5000)
+      // }).catch(() => {
+      //   setTimeout(() => {
+      //     this.fetchPowerData()
+      //   }, 5000)
+      // })
     },
     animateCircle (target = 0) {
       if (this.todayUsage < target) {

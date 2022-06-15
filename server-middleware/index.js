@@ -192,7 +192,7 @@ app.delete("/deleteuser/:uid", (req, res) => {
       res.status(400).send("data deletion failed");
     });
 });
-app.post("/setrandom", async (req, res) => {
+app.post("/setrandom", async (req, res) => {           //ONLY FOR TEST
   //SET DATA FOR NEW USER OR ADD NEW FIELDS TO USER
   var uid = req.body.uid;
   let arrdata = req.body.random.split("=");
@@ -212,7 +212,7 @@ app.post("/setrandom", async (req, res) => {
   res.json({ response: "done added in database" });
 
 });
-app.get("/testsum/:uid",async(req,res)=>{
+app.get("/todaypower/:uid",async(req,res)=>{                   //API TO GET TODAY'S SUM OF POWER
   var uid = req.params.uid;
   let today_year = new Date().getFullYear();
   let date = new Date().getDate();
@@ -231,13 +231,13 @@ app.get("/testsum/:uid",async(req,res)=>{
      var objs = powervalues.filter((strs)=>strs!=null).map((str)=>{
         return {
           time: parseInt(str.split(":")[0]*1000),
-          power: parseFloat(str.split(":")[1])
+          power: Math.abs(parseFloat(str.split(":")[1]))
         }
      })
      
       
     console.log("objs",objs.slice(0,10));
-     var datas = objs.filter(o=>{return (o.time>=start )});
+     var datas = objs.filter(o=>o.time>=start && o.time<=end );
      var record_nos=datas.length;
      console.log("power array:",datas);
     // console.log("objs:",objs)
@@ -246,12 +246,13 @@ app.get("/testsum/:uid",async(req,res)=>{
     //  console.log(original_data);
       var sum=0;
     datas.forEach(obj => {
-       sum+=parseInt(obj.power);
+       sum+=obj.power;
      });
     console.log("power values:",powervalues.slice(0,10));
     console.log("sum:",sum);
     console.log("length of arr:",record_nos);
-    let avg = sum/record_nos;
+    let avg = parseFloat((sum/record_nos).toFixed(2));
+    sum=parseFloat(sum.toFixed(2))
     res.send({power:sum,samples:record_nos});
     } else {
       powervalues=null;
@@ -266,7 +267,7 @@ app.get("/testsum/:uid",async(req,res)=>{
  
   
 })
-app.get("/timinggetpower/:uid",async(req,res)=>{
+app.get("/timinggetpower/:uid",async(req,res)=>{            //API FOR GET  POWER DATAPOINTS DURING CERTAIN INTERVAL
   let minutes = req.query.mins;
   let hours = req.query.hours;
   let days = req.query.days;

@@ -16,15 +16,22 @@
                 <div class="desc">Today power usage</div>
               </div>
             </div>
-            <router-link to="/new-device" class="card add">
+            <a href="http://smart-energy-bpp.herokuapp.com/new-device" target="_blank" class="card add">
               <div class="title">Add new device</div>
-            </router-link>
+            </a>
           </div>
         </div>
       </section>
-      <client-only placeholder="loading...">
+      <!-- <client-only placeholder="loading...">
         <line-chart :data="chartData"></line-chart>
-      </client-only>
+      </client-only> -->
+    </div>
+    <div v-show="showAlert" class="alert-modal">
+      <div class="middle">
+        <div class="title">{{ alertMsg.content }}</div>
+        <div class="desc">{{ new Date(alertMsg.time) }}</div>
+        <div class="alertBtn" @click="() => {showAlert = false}">OK</div>
+      </div>
     </div>
   </div>
 </template>
@@ -34,6 +41,11 @@ import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
+      showAlert: false,
+      alertMsg: {
+        time: 0,
+        content: ''
+      },
       chartData: {
         '2017-05-13': 2,
         '2017-05-14': 3,
@@ -45,8 +57,7 @@ export default {
           name: 'Esp32',
           status: 'online',
           todayPowerUsage: 6.4,
-          dailyPowerLimit: 9.2,
-          redirect: '/device'
+          dailyPowerLimit: 9.2
         }
       ],
     }
@@ -54,14 +65,105 @@ export default {
   computed: {
     ...mapGetters(['token', 'userDetails'])
   },
+  mounted () {
+    this.getAllDevices()
+  },
   methods: {
+    getAllDevices () {
+      const userId = '110771677259066877542'
+      const ref = this.$fireRef(this.$fireDb, `${userId}/devices`)
+      this.$fireGet(ref).then((res) => {
+        if (res.exists()) {
+          this.allDevices = res.val()
+          this.listenAlerts()
+        }
+      })
+    },
+    listenAlerts () {
+      const userId = '110771677259066877542'
+      const landingTime = new Date().getTime()
+
+      Object.keys(this.allDevices).forEach(deviceName => {
+        const alertRef = this.$fireRef(this.$fireDb, `${userId}/devices/${deviceName}/alert`)
+        this.$fireOnValue(alertRef, (res) => {
+          if (!res.exists()) { return }
+
+          const lastTime = res.val()
+          if (landingTime > lastTime ) { return } // alert in 1 minute of page load
+
+          this.showAlert = true
+          this.alertMsg = {
+            time: lastTime,
+            content: 'High power usage'
+          }
+        })
+      })
+      
+    },
     deviceCardClicked (device) {
-      this.$router.push(device.redirect)
+      this.$router.push({
+        path: `/device`,
+        query: {
+          id: device.name
+        }
+      })
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+.alert-modal{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .middle{
+    width: 400px;
+    height: 200px;
+    background: rgb(235, 118, 118);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+    .title{
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .desc{
+      font-size: 14px;
+      color: rgb(42, 42, 42);
+    }
+    
+    .alertBtn{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100px;
+      height: 30px;
+      background: #00a8ff;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      margin-top: 10px;
+    }
+  }
+}
 .dashboard {
   width: 100%;
   height: 100%;
