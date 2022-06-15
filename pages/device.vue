@@ -81,7 +81,7 @@ export default {
   },
   mounted () {
     setTimeout(() => {
-      this.animateCircle(6.4)
+      this.animateCircle(0)
       this.fetchPowerData()
     }, 1000)
   },

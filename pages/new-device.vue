@@ -2,6 +2,9 @@
   <div class="new-device">
     <ul class="top-intro">
       <li>Disconnect your current wifi</li>
+      <li>Connect to our device</li>
+      <li>Enter your credentials</li>
+      <li>Connect successful</li>
       <li>{{ uid }}</li>
     </ul>
     <div class="main-container">
